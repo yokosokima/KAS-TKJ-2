@@ -1,4 +1,359 @@
-nclick="selSt('paid')">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kas X TKJ-2</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#161616;
+  --bg3:#1e1e1e;
+  --border:#2a2a2a;
+  --border2:#333;
+  --green:#4ade80;
+  --green-dim:rgba(74,222,128,.12);
+  --red:#f87171;
+  --red-dim:rgba(248,113,113,.12);
+  --orange:#fb923c;
+  --orange-dim:rgba(251,146,60,.12);
+  --blue:#60a5fa;
+  --blue-dim:rgba(96,165,250,.12);
+  --text:#f1f1f1;
+  --text2:#888;
+  --text3:#555;
+  --radius:16px;
+  --radius-sm:10px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;}
+
+/* ── APP SHELL ── */
+.app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;position:relative;}
+
+/* ── TOPBAR ── */
+.topbar{padding:16px 16px 0;position:sticky;top:0;z-index:50;background:var(--bg);}
+.tb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.tb-title{font-size:1.15rem;font-weight:800;letter-spacing:-.3px;}
+.tb-title span{color:var(--green);}
+.tb-actions{display:flex;gap:8px;}
+.ic-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;transition:.2s;}
+.ic-btn:active{transform:scale(.92);}
+
+/* ── STAT STRIP ── */
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.ss{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;}
+.ss label{font-size:.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;display:block;margin-bottom:3px;}
+.ss-val{font-size:.95rem;font-weight:800;line-height:1;}
+.ss-val.g{color:var(--green);}
+.ss-val.r{color:var(--red);}
+.ss-val.w{color:var(--text);}
+
+/* ── COUNTDOWN CHIP ── */
+.cd-chip{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;margin-bottom:14px;font-size:.75rem;color:var(--text2);}
+.cd-chip.thu{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.06);}
+.cd-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.cd-chip.thu .cd-dot{background:var(--green);box-shadow:0 0 6px var(--green);}
+.cd-chip b{color:var(--text);font-weight:700;}
+.cd-chip.thu b{color:var(--green);}
+.cd-time-val{margin-left:auto;font-weight:800;font-size:.8rem;color:var(--blue);}
+.cd-chip.thu .cd-time-val{color:var(--green);}
+
+/* ── SEARCH + FILTER ── */
+.search-wrap{position:relative;margin-bottom:10px;}
+.search-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.8rem;}
+.s-inp{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px 11px 36px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;outline:none;}
+.s-inp::placeholder{color:var(--text3);}
+.s-inp:focus{border-color:var(--border2);}
+
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;}
+.filter-row::-webkit-scrollbar{display:none;}
+.fb{flex-shrink:0;padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.73rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+.fb.on{background:var(--bg3);border-color:var(--border2);color:var(--text);}
+.fb:active{transform:scale(.95);}
+
+/* ── SECTION LABEL ── */
+.sec-lbl{font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:0 2px;margin-bottom:8px;}
+
+/* ── SISWA LIST ── */
+.list{display:flex;flex-direction:column;gap:8px;padding:0 16px 140px;}
+
+/* ── SISWA CARD ── */
+.sk{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;user-select:none;}
+.sk:active{transform:scale(.985);background:var(--bg3);}
+.sk.paid{border-left:3px solid var(--green);}
+.sk.partial{border-left:3px solid var(--orange);}
+.sk.unpaid{border-left:3px solid var(--border);}
+.sk.overdue{border-left:3px solid var(--red);background:rgba(248,113,113,.04);}
+
+.sk-ava{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:800;flex-shrink:0;font-size:.82rem;}
+.sk.paid .sk-ava{background:var(--green-dim);color:var(--green);}
+.sk.partial .sk-ava{background:var(--orange-dim);color:var(--orange);}
+.sk.unpaid .sk-ava{background:var(--bg3);color:var(--text3);}
+.sk.overdue .sk-ava{background:var(--red-dim);color:var(--red);}
+
+.sk-info{flex:1;min-width:0;}
+.sk-name{font-size:.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.sk-sub{font-size:.7rem;color:var(--text2);display:flex;align-items:center;gap:6px;}
+.sk-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--text3);}
+
+.sk-right{text-align:right;flex-shrink:0;}
+.sk-amt{font-size:.92rem;font-weight:800;line-height:1;margin-bottom:3px;}
+.sk-amt.g{color:var(--green);}
+.sk-amt.r{color:var(--red);}
+.sk-amt.o{color:var(--orange);}
+.sk-amt.dim{color:var(--text3);}
+.sk-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:.6rem;font-weight:700;text-transform:uppercase;}
+.sk-badge.paid{background:var(--green-dim);color:var(--green);}
+.sk-badge.partial{background:var(--orange-dim);color:var(--orange);}
+.sk-badge.unpaid{background:var(--bg3);color:var(--text3);}
+.sk-badge.overdue{background:var(--red-dim);color:var(--red);}
+
+.od-tag{display:inline-flex;align-items:center;gap:3px;font-size:.6rem;font-weight:700;color:var(--red);margin-left:4px;}
+
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
+.empty-state i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:10px;}
+.empty-state p{font-size:.82rem;}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:24px;right:50%;transform:translateX(50%);max-width:calc(480px - 32px);width:calc(100% - 32px);background:var(--green);color:#000;border:none;border-radius:var(--radius);padding:15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 32px rgba(74,222,128,.35);z-index:40;transition:.25s;}
+.fab:active{transform:translateX(50%) scale(.97);}
+
+/* ── BOTTOM SHEET ── */
+.bs-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px);}
+.bs-ov.on{opacity:1;pointer-events:all;}
+.bs{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:480px;background:var(--bg2);border-radius:24px 24px 0 0;z-index:101;transition:transform .35s cubic-bezier(.4,0,.2,1);padding:0 0 env(safe-area-inset-bottom);}
+.bs-ov.on .bs{transform:translate(-50%,0);}
+.bs-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0;}
+.bs-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.bs-head h3{font-size:1rem;font-weight:800;}
+.bs-head p{font-size:.73rem;color:var(--text2);margin-top:2px;}
+.bs-body{padding:16px 18px;max-height:70vh;overflow-y:auto;}
+
+/* ── FORM INSIDE BS ── */
+.fg{margin-bottom:14px;}
+.fg label{font-size:.67rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:7px;}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:13px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;outline:none;transition:.2s;}
+.fi:focus{border-color:#444;}
+.fi::placeholder{color:var(--text3);}
+.pfx-wrap{position:relative;}
+.pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--green);font-weight:700;font-size:.85rem;pointer-events:none;}
+.pfx-wrap .fi{padding-left:40px;}
+
+/* Nom quick picks */
+.nom-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+.np{padding:10px 4px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:.2s;text-align:center;}
+.np.hl{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.np:active{transform:scale(.93);}
+.np-full{grid-column:span 4;background:var(--green-dim);border-color:var(--green);color:var(--green);}
+
+/* Status toggle */
+.st-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.st-btn{padding:12px 6px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.st-btn i{font-size:.9rem;}
+.st-btn.sel-paid{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.st-btn.sel-partial{border-color:var(--orange);background:var(--orange-dim);color:var(--orange);}
+.st-btn.sel-unpaid{border-color:var(--text3);background:var(--bg3);color:var(--text2);}
+.st-btn:active{transform:scale(.95);}
+
+/* Belum lunas preview */
+.bl-box{background:var(--red-dim);border:1px solid rgba(248,113,113,.25);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:none;}
+.bl-box.show{display:block;}
+.bl-row{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text2);margin-bottom:4px;}
+.bl-row:last-child{margin:0;color:var(--red);font-weight:700;border-top:1px solid rgba(248,113,113,.2);padding-top:6px;margin-top:4px;}
+
+.btn-submit{width:100%;padding:15px;background:var(--green);color:#000;border:none;border-radius:var(--radius);font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;margin-top:4px;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:active{transform:scale(.98);}
+.btn-submit.danger{background:var(--red);color:#fff;}
+
+/* ── ACTION SHEET (per siswa) ── */
+.act-list{display:flex;flex-direction:column;gap:6px;}
+.act-item{display:flex;align-items:center;gap:13px;padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:.2s;font-size:.88rem;font-weight:600;}
+.act-item:active{transform:scale(.98);}
+.act-item .act-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.act-item.green .act-ic{background:var(--green-dim);color:var(--green);}
+.act-item.blue .act-ic{background:var(--blue-dim);color:var(--blue);}
+.act-item.orange .act-ic{background:var(--orange-dim);color:var(--orange);}
+.act-item.red .act-ic{background:var(--red-dim);color:var(--red);}
+.act-item .act-lbl{flex:1;}
+.act-item .act-sub{font-size:.68rem;color:var(--text2);font-weight:400;}
+
+/* Siswa info in action sheet */
+.sk-info-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:14px;}
+.sib-name{font-size:.95rem;font-weight:800;margin-bottom:6px;}
+.sib-row{display:flex;justify-content:space-between;font-size:.78rem;color:var(--text2);margin-bottom:3px;}
+.sib-row:last-child{margin:0;}
+.sib-row span:last-child{font-weight:700;color:var(--text);}
+.sib-row span.r{color:var(--red);}
+.sib-row span.g{color:var(--green);}
+
+/* Konfirmasi lembaran */
+.confirm-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;text-align:center;}
+.confirm-box .conf-icon{font-size:2rem;margin-bottom:8px;}
+.confirm-box p{font-size:.82rem;color:var(--text2);line-height:1.6;}
+.conf-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.conf-btn{padding:13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s;}
+.conf-btn:active{transform:scale(.97);}
+.conf-btn.g{background:var(--green);color:#000;border-color:transparent;}
+.conf-btn.r{background:var(--red);color:#fff;border-color:transparent;}
+
+/* ── HISTORY TAB ── */
+.hist-list{display:flex;flex-direction:column;gap:8px;padding:0 16px 140px;}
+.hc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;cursor:pointer;transition:.2s;}
+.hc:active{transform:scale(.98);}
+.hc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.hc-week{font-size:.8rem;font-weight:800;color:var(--green);}
+.hc-date{font-size:.68rem;color:var(--text3);}
+.hc-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{padding:3px 9px;border-radius:20px;font-size:.65rem;font-weight:700;}
+.pill.g{background:var(--green-dim);color:var(--green);}
+.pill.o{background:var(--orange-dim);color:var(--orange);}
+.pill.r{background:var(--red-dim);color:var(--red);}
+.hc-total{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);}
+.hc-total span{font-size:.73rem;color:var(--text2);}
+.hc-total strong{font-size:.95rem;font-weight:800;color:var(--green);}
+
+/* ── TABS ── */
+.tab-bar{display:flex;background:var(--bg);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:39;}
+.tab-bar button{flex:1;padding:12px 8px 14px;background:transparent;border:none;color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s;}
+.tab-bar button i{font-size:1.1rem;}
+.tab-bar button.on{color:var(--green);}
+
+/* ── TOAST ── */
+.toast-c{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:6px;width:calc(100% - 32px);max-width:420px;}
+.ti{padding:11px 15px;border-radius:12px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:9px;backdrop-filter:blur(20px);animation:tIn .3s ease both;border:1px solid;}
+@keyframes tIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes tOut{to{opacity:0;transform:translateY(-12px)}}
+.ti.ok{background:rgba(10,28,10,.95);border-color:var(--green);color:var(--green);}
+.ti.err{background:rgba(28,8,8,.95);border-color:var(--red);color:var(--red);}
+.ti.info{background:rgba(8,14,30,.95);border-color:var(--blue);color:var(--blue);}
+
+/* panel */
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.panel.on{display:flex;}
+.scroll-area{flex:1;overflow-y:auto;padding-top:8px;}
+.scroll-area::-webkit-scrollbar{display:none;}
+.pad-h{padding:0 16px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <div class="tb-head">
+    <div class="tb-title">Kas <span>TKJ-2</span></div>
+    <div class="tb-actions">
+      <button class="ic-btn" onclick="showExportSheet()" title="Export"><i class="fas fa-share-nodes"></i></button>
+      <button class="ic-btn" onclick="showMo('mo-thu')" title="Reset Kamis"><i class="fas fa-rotate"></i></button>
+    </div>
+  </div>
+
+  <div class="stat-strip" id="stat-strip">
+    <div class="ss"><label>Minggu Ini</label><div class="ss-val g" id="st-week">Rp 0</div></div>
+    <div class="ss"><label>Kumulatif</label><div class="ss-val w" id="st-cumul">Rp 0</div></div>
+    <div class="ss"><label>Blm Lunas</label><div class="ss-val r" id="st-debt">Rp 0</div></div>
+  </div>
+
+  <div class="cd-chip" id="cd-chip">
+    <div class="cd-dot"></div>
+    <span id="cd-lbl">Hari Kas:</span>
+    <b id="cd-day">–</b>
+    <div class="cd-time-val" id="cd-tv">–</div>
+  </div>
+
+  <div class="search-wrap" id="search-wrap">
+    <i class="fas fa-search"></i>
+    <input class="s-inp" type="text" placeholder="Cari siswa..." oninput="render()" id="s-inp">
+  </div>
+
+  <div class="filter-row" id="filter-row">
+    <button class="fb on" id="fb-all" onclick="setFlt('all')">Semua</button>
+    <button class="fb" id="fb-paid" onclick="setFlt('paid')">✓ Lunas</button>
+    <button class="fb" id="fb-partial" onclick="setFlt('partial')">◑ Sebagian</button>
+    <button class="fb" id="fb-unpaid" onclick="setFlt('unpaid')">⏳ Belum Lunas</button>
+    <button class="fb" id="fb-overdue" onclick="setFlt('overdue')">🔴 Nunggak</button>
+  </div>
+</div>
+
+<div class="panel on" id="panel-kas">
+  <div class="scroll-area">
+    <div class="list" id="sk-list"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-hist">
+  <div class="scroll-area">
+    <div style="padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:.75rem;color:var(--text2);">Total kumulatif</span>
+      <span style="font-size:1rem;font-weight:800;color:var(--green);" id="hist-cumul">Rp 0</span>
+    </div>
+    <div class="hist-list" id="hist-list"></div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="openAddSheet()">
+  <i class="fas fa-plus"></i> Catat Pembayaran
+</button>
+
+<div class="tab-bar">
+  <button class="on" id="tab-kas" onclick="switchTab('kas')">
+    <i class="fas fa-wallet"></i>Kas
+  </button>
+  <button id="tab-hist" onclick="switchTab('hist')">
+    <i class="fas fa-clock-rotate-left"></i>Riwayat
+  </button>
+</div>
+
+</div><div class="bs-ov" id="bs-add">
+  <div class="bs">
+    <div class="bs-handle"></div>
+    <div class="bs-head">
+      <h3>Catat Pembayaran</h3>
+      <p>Input kas siswa minggu ini</p>
+    </div>
+    <div class="bs-body">
+      <div class="fg">
+        <label>Pilih Siswa</label>
+        <select class="fi" id="inp-nama" onchange="onSiswaChange()">
+          <option value="">— Pilih siswa —</option>
+        </select>
+      </div>
+
+      <div class="bl-box" id="bl-box">
+        <div class="bl-row"><span>Belum lunas minggu lalu:</span><span id="bl-old">Rp 0</span></div>
+        <div class="bl-row"><span>Kas minggu ini:</span><span>Rp 2.000</span></div>
+        <div class="bl-row"><span>Total yang harus dibayar:</span><span id="bl-total">Rp 2.000</span></div>
+      </div>
+
+      <div class="fg">
+        <label>Nominal Dibayar</label>
+        <div class="pfx-wrap">
+          <span class="pfx">Rp</span>
+          <input class="fi" type="number" inputmode="numeric" id="inp-nominal" placeholder="2000">
+        </div>
+        <div class="nom-picks" id="nom-picks">
+          <button class="np hl" onclick="setNom(2000)">2k</button>
+          <button class="np" onclick="setNom(4000)">4k</button>
+          <button class="np" onclick="setNom(6000)">6k</button>
+          <button class="np" onclick="setNom(10000)">10k</button>
+          <button class="np np-full" id="np-full" style="display:none" onclick="setNomFull()">Lunas Semua</button>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Keterangan</label>
+        <input class="fi" type="text" id="inp-ket" placeholder="Kas Kamis minggu ke-...">
+      </div>
+
+      <div class="fg">
+        <label>Status</label>
+        <div class="st-grid">
+          <button class="st-btn sel-paid" id="sb-paid" onclick="selSt('paid')">
             <i class="fas fa-check-circle"></i>Lunas
           </button>
           <button class="st-btn" id="sb-partial" onclick="selSt('partial')">
