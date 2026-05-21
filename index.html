@@ -401,7 +401,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
     <div class="bs-handle"></div>
     <div class="bs-head">
       <h3>Catat Pengeluaran Uang Kas</h3>
-      <p>Ketik jumlah pengeluaran dan catatan tujuan</p>
+      <p>Ketik jumlah pengeluaran and catatan tujuan</p>
     </div>
     <div class="bs-body">
       <div class="fg">
@@ -752,7 +752,7 @@ async function doThuReset(){
 function archiveWeek(){
   const wn=parseInt(localStorage.getItem('wk_num')||'1');
   const total=data.reduce((s,d)=>s+d.paid,0);
-  const snap=data.map(d=>({nama:d.nama,paid:d.paid,debt:d.debt,status:d.status,tanggal:d.tanggal}));
+  const snap=data.map(d=>({nama:d.nama,paid:d.paid,debt:d.debt,status:d.status,tanggal:d.tanggal,ket:d.ket}));
   history.unshift({weekNum:wn,dateStr:getToday(),snapshot:snap,total});
 }
 async function doReset(){
@@ -819,6 +819,7 @@ function setNomFull(){
   if(e) setNom(e.debt);
 }
 
+/* ── FUNGSI TAMBAH TERBARU DENGAN KETERANGAN ── */
 async function tambah(){
   const nama=document.getElementById('inp-nama').value.trim();
   const nominal=parseInt(document.getElementById('inp-nominal').value)||0;
@@ -852,6 +853,7 @@ async function tambah(){
     entry.status='unpaid';
   }
   
+  // Mengunci keterangan kustom agar masuk database
   entry.ket=ket||'Kas Kamis mingguan'; 
   entry.tanggal=getToday();
   
@@ -909,7 +911,6 @@ function renderPengeluaran(){
     </div>
   `).join('');
 }
-
 
 // ── ACTION SHEET ──
 function openAction(id){
@@ -1111,6 +1112,7 @@ function renderHistory(){
   }).join('');
 }
 
+/* ── DETAIL RIWAYAT MINGGUAN SEKARANG MEMUNCULKAN KETERANGAN ── */
 function openHistDetail(idx){
   const h=history[idx];
   if(!h) return;
@@ -1118,13 +1120,21 @@ function openHistDetail(idx){
   document.getElementById('hd-sub').textContent=`${h.dateStr} · ${h.snapshot.length} siswa`;
   document.getElementById('hd-total').textContent=fmtRp(h.total);
   const sorted=[...h.snapshot].sort((a,b)=>{const o={paid:0,partial:1,unpaid:2};return (o[a.status]||0)-(o[b.status]||0)||a.nama.localeCompare(b.nama);});
+  
   document.getElementById('hd-body').innerHTML=sorted.map(s=>{
     const cls=s.status==='paid'?'g':s.status==='partial'?'o':'r';
     const lbl=s.status==='paid'?'Lunas':s.status==='partial'?'Sebagian':'Belum Lunas';
-    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:.82rem;">
-      <span style="font-weight:600;flex:1;">${esc(s.nama)}</span>
-      <span style="font-family:monospace;font-weight:700;margin-right:10px;" class="${cls}">${s.paid>0?fmtRp(s.paid):'—'}</span>
-      <span style="font-size:.68rem;color:var(--text3);">${lbl}</span>
+    const catatanSiswa = s.ket ? s.ket : 'Kas Kamis mingguan'; // Default jika kosong
+    
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:3px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:.82rem;">
+        <span style="font-weight:600;color:var(--text);">${esc(s.nama)}</span>
+        <span style="font-family:monospace;font-weight:800;" class="${cls}">${s.paid>0?fmtRp(s.paid):'—'}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:.68rem;color:var(--text2);">
+        <span style="font-style:italic;color:var(--orange); max-width: 75%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">💬 ${esc(catatanSiswa)}</span>
+        <span style="color:var(--text3);">${lbl}</span>
+      </div>
     </div>`;
   }).join('');
   showBs('bs-hist-detail');
