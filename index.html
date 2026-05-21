@@ -39,17 +39,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 /* ── TOPBAR ── */
 .topbar{padding:16px 16px 0;position:sticky;top:0;z-index:50;background:var(--bg);}
 .tb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.tb-title{font-size:1.15rem;font-weight:800;letter-spacing:-.3px;}
-.tb-title span{color:var(--green);}
+
+/* Font Kas Baru Modifikasi Gradasi */
+.tb-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(45deg, #ffffff, #4ade80);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.tb-title span{color:var(--green);-webkit-text-fill-color:initial;}
+
 .tb-actions{display:flex;gap:8px;}
 .ic-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;transition:.2s;}
 .ic-btn:active{transform:scale(.92);}
 
 /* ── STAT STRIP ── */
-.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.ss{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;}
-.ss label{font-size:.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;display:block;margin-bottom:3px;}
-.ss-val{font-size:.95rem;font-weight:800;line-height:1;}
+.stat-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
+.ss{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
+.ss label{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;display:block;margin-bottom:4px;}
+.ss-val{font-size:1.1rem;font-weight:800;line-height:1;}
 .ss-val.g{color:var(--green);}
 .ss-val.r{color:var(--red);}
 .ss-val.w{color:var(--text);}
@@ -120,9 +123,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .empty-state i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:10px;}
 .empty-state p{font-size:.82rem;}
 
-/* ── FAB ── */
-.fab{position:fixed;bottom:24px;right:50%;transform:translateX(50%);max-width:calc(480px - 32px);width:calc(100% - 32px);background:var(--green);color:#000;border:none;border-radius:var(--radius);padding:15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 32px rgba(74,222,128,.35);z-index:40;transition:.25s;}
-.fab:active{transform:translateX(50%) scale(.97);}
+/* ── FAB CONTROLLER ── */
+.fab-container{position:fixed;bottom:24px;right:50%;transform:translateX(50%);max-width:calc(480px - 32px);width:calc(100% - 32px);display:grid;grid-template-columns:1fr 1fr;gap:10px;z-index:40;}
+.fab{background:var(--green);color:#000;border:none;border-radius:var(--radius);padding:15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 8px 32px rgba(74,222,128,.2);transition:.2s;}
+.fab:active{transform:scale(.97);}
+.fab.out{background:var(--bg3);border:1px solid var(--border2);color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.5);}
 
 /* ── BOTTOM SHEET ── */
 .bs-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px);}
@@ -218,6 +223,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .hc-total span{font-size:.73rem;color:var(--text2);}
 .hc-total strong{font-size:.95rem;font-weight:800;color:var(--green);}
 
+/* Custom Pengeluaran Teks Item */
+.out-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.82rem;}
+.out-main{flex:1;padding-right:10px;}
+.out-catatan{font-weight:700;color:var(--text);margin-bottom:2px;}
+.out-tgl{font-size:.68rem;color:var(--text3);}
+.out-amt{color:var(--red);font-weight:800;white-space:nowrap;}
+
 /* ── TABS ── */
 .tab-bar{display:flex;background:var(--bg);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:39;}
 .tab-bar button{flex:1;padding:12px 8px 14px;background:transparent;border:none;color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s;}
@@ -254,9 +266,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
   </div>
 
   <div class="stat-strip" id="stat-strip">
-    <div class="ss"><label>Minggu Ini</label><div class="ss-val g" id="st-week">Rp 0</div></div>
-    <div class="ss"><label>Kumulatif</label><div class="ss-val w" id="st-cumul">Rp 0</div></div>
-    <div class="ss"><label>Blm Lunas</label><div class="ss-val r" id="st-debt">Rp 0</div></div>
+    <div class="ss"><label>Total Kas</label><div class="ss-val g" id="st-cumul">Rp 0</div></div>
+    <div class="ss"><label>Belum Lunas</label><div class="ss-val r" id="st-debt">Rp 0</div></div>
   </div>
 
   <div class="cd-chip" id="cd-chip">
@@ -274,7 +285,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
   <div class="filter-row" id="filter-row">
     <button class="fb on" id="fb-all" onclick="setFlt('all')">Semua</button>
     <button class="fb" id="fb-paid" onclick="setFlt('paid')">✓ Lunas</button>
-    <button class="fb" id="fb-partial" onclick="setFlt('partial')">◑ Sebagian</button>
     <button class="fb" id="fb-unpaid" onclick="setFlt('unpaid')">⏳ Belum Lunas</button>
     <button class="fb" id="fb-overdue" onclick="setFlt('overdue')">🔴 Nunggak</button>
   </div>
@@ -288,17 +298,29 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 
 <div class="panel" id="panel-hist">
   <div class="scroll-area">
-    <div style="padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;">
-      <span style="font-size:.75rem;color:var(--text2);">Total kumulatif</span>
+    <div style="padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);margin-bottom:12px;">
+      <span style="font-size:.75rem;color:var(--text2);">Total Kas Sekarang</span>
       <span style="font-size:1rem;font-weight:800;color:var(--green);" id="hist-cumul">Rp 0</span>
     </div>
+    
+    <div class="pad-h" style="margin-bottom:14px;">
+      <div class="sec-lbl">📋 Riwayat Pengeluaran Uang Kas</div>
+      <div id="out-history-list" style="display:flex;flex-direction:column;gap:8px;">
+        </div>
+    </div>
+    
     <div class="hist-list" id="hist-list"></div>
   </div>
 </div>
 
-<button class="fab" id="fab" onclick="openAddSheet()">
-  <i class="fas fa-plus"></i> Catat Pembayaran
-</button>
+<div class="fab-container" id="fab-container">
+  <button class="fab" onclick="openAddSheet()">
+    <i class="fas fa-plus"></i> Pemasukan
+  </button>
+  <button class="fab out" onclick="openOutSheet()">
+    <i class="fas fa-hand-holding-dollar"></i> Pengeluaran
+  </button>
+</div>
 
 <div class="tab-bar">
   <button class="on" id="tab-kas" onclick="switchTab('kas')">
@@ -315,8 +337,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="bs-head">
-      <h3>Catat Pembayaran</h3>
-      <p>Input kas siswa minggu ini</p>
+      <h3>Catat Pemasukan Kas</h3>
+      <p>Pilih nama siswa dan bayar kas</p>
     </div>
     <div class="bs-body">
       <div class="fg">
@@ -358,7 +380,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
           <button class="st-btn sel-paid" id="sb-paid" onclick="selSt('paid')">
             <i class="fas fa-check-circle"></i>Lunas
           </button>
-          <button class="st-btn" id="sb-partial" onclick="sb-partial" onclick="selSt('partial')">
+          <button class="st-btn" id="sb-partial" onclick="selSt('partial')">
             <i class="fas fa-minus-circle"></i>Sebagian
           </button>
           <button class="st-btn" id="sb-unpaid" onclick="selSt('unpaid')">
@@ -368,7 +390,35 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
       </div>
 
       <button class="btn-submit" onclick="tambah()">
-        <i class="fas fa-check"></i> Simpan
+        <i class="fas fa-check"></i> Simpan Pemasukan
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="bs-ov" id="bs-out">
+  <div class="bs">
+    <div class="bs-handle"></div>
+    <div class="bs-head">
+      <h3>Catat Pengeluaran Uang Kas</h3>
+      <p>Ketik jumlah pengeluaran dan catatan tujuan</p>
+    </div>
+    <div class="bs-body">
+      <div class="fg">
+        <label>Jumlah Uang Keluar</label>
+        <div class="pfx-wrap">
+          <span class="pfx" style="color:var(--red);">Rp</span>
+          <input class="fi" type="number" inputmode="numeric" id="out-nominal" placeholder="ex: 15000">
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Catatan / Keperluan Uang Keluar</label>
+        <input class="fi" type="text" id="out-catatan" placeholder="ex: Beli Sapu Kelas / Kertas F4">
+      </div>
+
+      <button class="btn-submit danger" onclick="simpanPengeluaran()">
+        <i class="fas fa-minus"></i> Simpan Pengeluaran
       </button>
     </div>
   </div>
@@ -576,26 +626,25 @@ const SISWA = [
   "Silfia Wulan Junaini","Syalwa Khufata Putri","Wiwin Febrianti Azzahra Putri"
 ];
 const KAS = 2000;
-const PRESET_SEED = 290000;
+const PRESET_SEED = 285000; // Sesuai request diubah dasar awal ke 285000
 
-// URL Sinkronisasi Database Publik Cloud Gratis
 const DB_URL = "https://kvdb.io/MNY6Ew7vHwF6bpxYdEwZfM/data_kas_tkj2";
 
-let data=[], history=[], selStat='paid', flt='all', activeId=null;
+let data=[], history=[], pengeluaran=[], selStat='paid', flt='all', activeId=null;
 
 // ── INIT ──
 async function init(){
   buildDropdown();
   await syncLoad();
   checkThuReset();
-  render(); renderStats(); renderHistory();
+  render(); renderStats(); renderHistory(); renderPengeluaran();
   setInterval(updateCD, 1000); updateCD();
 
   document.querySelectorAll('.bs-ov').forEach(el=>{
     el.addEventListener('click', e=>{ if(e.target===el) hideBs(el.id); });
   });
 
-  ['inp-nominal','inp-ket','part-inp','edit-inp'].forEach(id=>{
+  ['inp-nominal','inp-ket','part-inp','edit-inp','out-nominal','out-catatan'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.addEventListener('keydown', e=>{ if(e.key==='Enter') el.blur(); });
   });
@@ -611,6 +660,7 @@ async function syncLoad() {
       if (db && db.data) {
         data = db.data;
         history = db.history || [];
+        pengeluaran = db.pengeluaran || [];
         localStorage.setItem('wk_num', db.wk_num || '1');
         return;
       }
@@ -623,16 +673,20 @@ async function syncLoad() {
   data = rd ? JSON.parse(rd) : null;
   const rh = localStorage.getItem('local_hist');
   history = rh ? JSON.parse(rh) : [];
+  const rp = localStorage.getItem('local_out');
+  pengeluaran = rp ? JSON.parse(rp) : [];
   if (!data) seedPreset();
 }
 
 async function syncSave() {
   localStorage.setItem('local_data', JSON.stringify(data));
   localStorage.setItem('local_hist', JSON.stringify(history));
+  localStorage.setItem('local_out', JSON.stringify(pengeluaran));
   
   const payload = {
     data: data,
     history: history,
+    pengeluaran: pengeluaran,
     wk_num: localStorage.getItem('wk_num') || '1'
   };
 
@@ -691,7 +745,7 @@ async function doThuReset(){
   initWeek(co);
   localStorage.setItem('last_reset_day', dateStr(new Date()));
   await syncSave();
-  render(); renderStats(); renderHistory();
+  render(); renderStats(); renderHistory(); renderPengeluaran();
   hideBs('mo-thu'); hideBs('mo-auto-thu');
   toast('✅ Reset! Belum lunas terbawa ke minggu baru.','ok');
 }
@@ -703,9 +757,10 @@ function archiveWeek(){
 }
 async function doReset(){
   localStorage.setItem('wk_num', String(parseInt(localStorage.getItem('wk_num')||'0')+1));
+  pengeluaran = []; // Ikut direset pengeluarannya
   initWeek({});
   await syncSave();
-  render(); renderStats(); renderHistory();
+  render(); renderStats(); renderHistory(); renderPengeluaran();
   hideBs('mo-reset');
   toast('Data direset ke nol.','info');
 }
@@ -720,7 +775,7 @@ function buildDropdown(){
   });
 }
 
-// ── FORM ──
+// ── FORM PEMASUKAN ──
 function openAddSheet(){
   document.getElementById('inp-nama').value='';
   document.getElementById('inp-nominal').value='';
@@ -808,6 +863,53 @@ async function tambah(){
   const msg=entry.status==='unpaid'?`${nama} — dicatat belum lunas`:entry.status==='paid'?`${nama} — Lunas ✓`:`${nama} — Berhasil dicicil ◑`;
   toast(msg, entry.status==='unpaid'?'info':'ok');
 }
+
+// ── MANAGEMENT SYSTEM PENGELUARAN ──
+function openOutSheet(){
+  document.getElementById('out-nominal').value = '';
+  document.getElementById('out-catatan').value = '';
+  showBs('bs-out');
+}
+
+async function simpanPengeluaran(){
+  const nominal = parseInt(document.getElementById('out-nominal').value)||0;
+  const catatan = document.getElementById('out-catatan').value.trim();
+
+  if(nominal <= 0){ toast('Masukkan nominal pengeluaran valid!','err'); return; }
+  if(!catatan){ toast('Isi catatan pengeluaran untuk apa!','err'); return; }
+
+  const itemPengeluaran = {
+    id: Date.now(),
+    tanggal: getToday(),
+    jumlah: nominal,
+    catatan: catatan
+  };
+
+  pengeluaran.push(itemPengeluaran);
+  await syncSave();
+  renderStats();
+  renderPengeluaran();
+  hideBs('bs-out');
+  toast('Pengeluaran berhasil dicatat! 💸','ok');
+}
+
+function renderPengeluaran(){
+  const container = document.getElementById('out-history-list');
+  if(!pengeluaran.length){
+    container.innerHTML = `<div style="text-align:center;padding:12px;font-size:.75rem;color:var(--text3);">Belum ada catatan pengeluaran.</div>`;
+    return;
+  }
+  container.innerHTML = pengeluaran.map(p => `
+    <div class="out-item">
+      <div class="out-main">
+        <div class="out-catatan">${esc(p.catatan)}</div>
+        <div class="out-tgl">${p.tanggal}</div>
+      </div>
+      <div class="out-amt">-${fmtRp(p.jumlah)}</div>
+    </div>
+  `).join('');
+}
+
 
 // ── ACTION SHEET ──
 function openAction(id){
@@ -906,7 +1008,7 @@ async function doHapus(){
   toast(`${e.nama} direset ke belum bayar`,'info');
 }
 
-// ── RENDER ──
+// ── RENDER LIST SISWA ──
 function render(){
   const search=document.getElementById('s-inp').value.toLowerCase();
   const container=document.getElementById('sk-list');
@@ -914,7 +1016,8 @@ function render(){
   let list=data.filter(d=>{
     const ms=d.nama.toLowerCase().includes(search);
     if(flt==='all') return ms;
-    if(flt==='overdue') return ms&&d.weeksOverdue>0&&d.status!=='paid';
+    // Sesuai Request: Filter Nunggak khusus yang tidak bayar 2 minggu atau lebih (>= 2)
+    if(flt==='overdue') return ms&&d.weeksOverdue>=2&&d.status!=='paid';
     return ms&&d.status===flt;
   });
 
@@ -968,15 +1071,19 @@ function cardHTML(d){
   </div>`;
 }
 
-// ── STATS ──
+// ── STATS & RUMUS TOTAL KAS DENGAN PENGELUARAN ──
 function renderStats(){
   const paidAmt=data.reduce((s,d)=>s+d.paid,0);
   const blAmt=data.reduce((s,d)=>s+d.debt,0);
   const histCumul=history.reduce((s,h)=>s+h.total,0);
-  document.getElementById('st-week').textContent=fmtRp(paidAmt);
-  document.getElementById('st-cumul').textContent=fmtRp(histCumul+paidAmt);
+  const totalKeluar=pengeluaran.reduce((s,p)=>s+p.jumlah,0);
+
+  // Rumus Sistem Dinamis: (Dasar Awal + Seluruh Setoran Minggu Ini) - Total Pengeluaran Kelas
+  const totalKasAkhir = (PRESET_SEED + paidAmt) - totalKeluar;
+
+  document.getElementById('st-cumul').textContent=fmtRp(totalKasAkhir);
   document.getElementById('st-debt').textContent=fmtRp(blAmt);
-  document.getElementById('hist-cumul').textContent=fmtRp(histCumul+paidAmt);
+  document.getElementById('hist-cumul').textContent=fmtRp(totalKasAkhir);
 }
 
 // ── HISTORY ──
@@ -984,7 +1091,7 @@ function renderHistory(){
   const hl=document.getElementById('hist-list');
   const real=history.filter(h=>!h.isSeed);
   if(!real.length){
-    hl.innerHTML=`<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><p>Belum ada riwayat.</p></div>`;
+    hl.innerHTML=`<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><p>Belum ada riwayat mingguan.</p></div>`;
     return;
   }
   hl.innerHTML=history.map((h,i)=>{
@@ -1029,7 +1136,7 @@ function openHistDetail(idx){
 // ── FILTER ──
 function setFlt(f){
   flt=f;
-  ['all','paid','partial','unpaid','overdue'].forEach(x=>{
+  ['all','paid','unpaid','overdue'].forEach(x=>{
     const b=document.getElementById('fb-'+x);
     if(b) b.className='fb'+(x===f?' on':'');
   });
@@ -1042,7 +1149,7 @@ function switchTab(t){
   document.getElementById('panel-hist').classList.toggle('on',t==='hist');
   document.getElementById('tab-kas').classList.toggle('on',t==='kas');
   document.getElementById('tab-hist').classList.toggle('on',t==='hist');
-  document.getElementById('fab').style.display=t==='kas'?'flex':'none';
+  document.getElementById('fab-container').style.display=t==='kas'?'grid':'none';
   document.getElementById('search-wrap').style.display=t==='kas'?'':'none';
   document.getElementById('filter-row').style.display=t==='kas'?'':'none';
 }
