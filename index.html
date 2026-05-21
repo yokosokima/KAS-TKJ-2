@@ -309,7 +309,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
   </button>
 </div>
 
-</div><div class="bs-ov" id="bs-add">
+</div>
+
+<div class="bs-ov" id="bs-add">
   <div class="bs">
     <div class="bs-handle"></div>
     <div class="bs-head">
@@ -356,7 +358,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
           <button class="st-btn sel-paid" id="sb-paid" onclick="selSt('paid')">
             <i class="fas fa-check-circle"></i>Lunas
           </button>
-          <button class="st-btn" id="sb-partial" onclick="selSt('partial')">
+          <button class="st-btn" id="sb-partial" onclick="sb-partial" onclick="selSt('partial')">
             <i class="fas fa-minus-circle"></i>Sebagian
           </button>
           <button class="st-btn" id="sb-unpaid" onclick="selSt('unpaid')">
@@ -384,7 +386,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
       <div class="act-list">
         <div class="act-item green" onclick="actLunas()">
           <div class="act-ic"><i class="fas fa-check-circle"></i></div>
-          <div class="act-lbl">Tandai Lunas<div class="act-sub">Bayar penuh Rp 2.000 (atau total belum lunas)</div></div>
+          <div class="act-lbl">Tandai Lunas<div class="act-sub">Bayar penuh total belum lunas</div></div>
         </div>
         <div class="act-item orange" onclick="actPartialSheet()">
           <div class="act-ic"><i class="fas fa-hand-holding-dollar"></i></div>
@@ -576,7 +578,7 @@ const SISWA = [
 const KAS = 2000;
 const PRESET_SEED = 290000;
 
-// URL Sinkronisasi Database Publik Cloud Gratis (Menggunakan kv db service terpercaya)
+// URL Sinkronisasi Database Publik Cloud Gratis
 const DB_URL = "https://kvdb.io/MNY6Ew7vHwF6bpxYdEwZfM/data_kas_tkj2";
 
 let data=[], history=[], selStat='paid', flt='all', activeId=null;
@@ -599,7 +601,7 @@ async function init(){
   });
 }
 
-// ── ONLINE DATABASE SYNC (Fix Reset Hilang di HP Lain) ──
+// ── ONLINE DATABASE SYNC ──
 async function syncLoad() {
   try {
     toast("Menghubungkan ke database...", "info");
@@ -617,7 +619,6 @@ async function syncLoad() {
     console.log("Database offline, beralih ke penyimpanan lokal browser.");
   }
   
-  // Backup jika internet putus
   const rd = localStorage.getItem('local_data');
   data = rd ? JSON.parse(rd) : null;
   const rh = localStorage.getItem('local_hist');
@@ -726,7 +727,8 @@ function openAddSheet(){
   document.getElementById('inp-ket').value='';
   document.getElementById('bl-box').classList.remove('show');
   document.getElementById('np-full').style.display='none';
-  selSt('paid'); setNom(KAS);
+  selSt('paid'); 
+  setNom('');
   showBs('bs-add');
 }
 
@@ -735,20 +737,24 @@ function onSiswaChange(){
   const entry=data.find(d=>d.nama===nama);
   const box=document.getElementById('bl-box');
   const npFull=document.getElementById('np-full');
-  if(!entry||entry.weeksOverdue===0){ box.classList.remove('show'); npFull.style.display='none'; setNom(KAS); return; }
+  
+  if(!entry){ box.classList.remove('show'); npFull.style.display='none'; return; }
+  
   document.getElementById('bl-old').textContent=fmtRp(entry.weeksOverdue*KAS);
   document.getElementById('bl-total').textContent=fmtRp(entry.debt);
   box.classList.add('show');
-  npFull.textContent=`Lunas (${fmtRp(entry.debt)})`;
+  
+  npFull.textContent=`Lunas Semua (${fmtRp(entry.debt)})`;
   npFull.style.display='';
-  setNom(entry.debt);
+  
+  setNom(entry.debt > 0 ? Math.min(KAS, entry.debt) : KAS);
 }
 
 function selSt(s){
   selStat=s;
   ['paid','partial','unpaid'].forEach(x=>{
     const b=document.getElementById('sb-'+x);
-    b.className='st-btn'+(x===s?' sel-'+x:'');
+    if(b) b.className='st-btn'+(x===s?' sel-'+x:'');
   });
 }
 function setNom(v){ document.getElementById('inp-nominal').value=v; }
@@ -762,25 +768,45 @@ async function tambah(){
   const nama=document.getElementById('inp-nama').value.trim();
   const nominal=parseInt(document.getElementById('inp-nominal').value)||0;
   const ket=document.getElementById('inp-ket').value.trim();
+  
   if(!nama){ toast('Pilih nama siswa!','err'); return; }
   const entry=data.find(d=>d.nama===nama);
   if(!entry){ toast('Siswa tidak ditemukan!','err'); return; }
-  const totalOwed=entry.debt;
 
-  if(selStat==='paid'){
-    entry.paid+=totalOwed; entry.debt=0; entry.status='paid'; entry.weeksOverdue=0;
-  } else if(selStat==='partial'){
-    if(nominal<=0){ toast('Masukkan nominal!','err'); return; }
-    if(nominal>=totalOwed){ entry.paid+=totalOwed; entry.debt=0; entry.status='paid'; entry.weeksOverdue=0; }
-    else { entry.paid+=nominal; entry.debt=totalOwed-nominal; entry.status='partial'; }
-  } else {
+  if(selStat==='paid' && nominal === 0){
+    const totalOwed = entry.debt;
+    entry.paid += totalOwed; 
+    entry.debt = 0; 
+    entry.status = 'paid'; 
+    entry.weeksOverdue = 0;
+  } 
+  else if(nominal > 0){
+    if(nominal >= entry.debt){
+      entry.paid += entry.debt;
+      entry.debt = 0;
+      entry.status = 'paid';
+      entry.weeksOverdue = 0;
+    } else {
+      entry.paid += nominal;
+      entry.debt -= nominal;
+      entry.status = 'partial';
+      entry.weeksOverdue = Math.ceil(entry.debt / KAS);
+    }
+  } 
+  else {
     entry.status='unpaid';
   }
-  entry.ket=ket||'Kas Kamis mingguan'; entry.tanggal=getToday();
-  await syncSave(); render(); renderStats();
+  
+  entry.ket=ket||'Kas Kamis mingguan'; 
+  entry.tanggal=getToday();
+  
+  await syncSave(); 
+  render(); 
+  renderStats();
   hideBs('bs-add');
-  const msg=selStat==='unpaid'?`${nama} — dicatat belum lunas`:selStat==='paid'?`${nama} — Lunas ✓`:`${nama} — Bayar sebagian ◑`;
-  toast(msg, selStat==='unpaid'?'info':'ok');
+  
+  const msg=entry.status==='unpaid'?`${nama} — dicatat belum lunas`:entry.status==='paid'?`${nama} — Lunas ✓`:`${nama} — Berhasil dicicil ◑`;
+  toast(msg, entry.status==='unpaid'?'info':'ok');
 }
 
 // ── ACTION SHEET ──
@@ -1097,7 +1123,7 @@ function toast(msg,type='ok'){
 // ── HELPERS ──
 function fmtRp(n){return 'Rp '+Number(n||0).toLocaleString('id-ID');}
 function getToday(){const n=new Date();return `${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()}`;}
-function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2['0'])}-${String(d.getDate()).padStart(2,'0')}`;}
+function dateStr(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 init();
