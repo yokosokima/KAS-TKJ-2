@@ -365,15 +365,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
         <input class="fi" type="text" id="inp-ket" placeholder="ex: Bayar punya faroz 8">
       </div>
 
-      <div class="fg" style="display:none;">
-        <label>Status</label>
-        <div class="st-grid">
-          <button class="st-btn sel-paid" id="sb-paid" onclick="selSt('paid')">Lunas</button>
-          <button class="st-btn" id="sb-partial" onclick="selSt('partial')">Sebagian</button>
-          <button class="st-btn" id="sb-unpaid" onclick="selSt('unpaid')">Belum</button>
-        </div>
-      </div>
-
       <button class="btn-submit" onclick="tambah()">
         <i class="fas fa-check"></i> Simpan Pemasukan
       </button>
@@ -455,7 +446,7 @@ const KAS = 2000;
 const PRESET_SEED = 285000; 
 const DB_URL = "https://kvdb.io/MNY6Ew7vHwF6bpxYdEwZfM/data_kas_tkj2";
 
-let data=[], history=[], pengeluaran=[], selStat='paid', flt='all', activeId=null;
+let data=[], history=[], pengeluaran=[], flt='all', activeId=null;
 
 async function init(){
   buildDropdown();
@@ -571,7 +562,6 @@ function onSiswaChange(){
 function setNom(v){ document.getElementById('inp-nominal').value=v; }
 function setNomFull(){ const n=document.getElementById('inp-nama').value; const e=data.find(d=>d.nama===n); if(e) setNom(e.debt); }
 
-/* ── PERBAIKAN LOGIKA: SEKARANG NOMINAL BEBAS LANGSUNG MASUK UTUH ── */
 async function tambah(){
   const nama=document.getElementById('inp-nama').value.trim();
   const nominal=parseInt(document.getElementById('inp-nominal').value)||0;
@@ -582,10 +572,8 @@ async function tambah(){
   if(!entry){ toast('Siswa tidak ditemukan!','err'); return; }
   if(nominal <= 0){ toast('Masukkan nominal valid!','err'); return; }
 
-  // Uang yang masuk ditambahkan seluruhnya tanpa dibatasi 2k
   entry.paid += nominal;
   
-  // Update sisa utang secara adil
   if(nominal >= entry.debt){
     entry.debt = 0;
     entry.status = 'paid';
@@ -605,7 +593,6 @@ async function tambah(){
   toast(`Berhasil mencatat Rp ${nominal.toLocaleString('id-ID')} untuk ${nama}`,'ok');
 }
 
-// ── PENGELUARAN ──
 function openOutSheet(){ document.getElementById('out-nominal').value=''; document.getElementById('out-catatan').value=''; showBs('bs-out'); }
 async function simpanPengeluaran(){
   const nominal=parseInt(document.getElementById('out-nominal').value)||0;
@@ -620,12 +607,11 @@ function renderPengeluaran(){
   c.innerHTML=pengeluaran.map(p=>`<div class="out-item"><div class="out-main"><div class="out-catatan">${esc(p.catatan)}</div><div class="out-tgl">${p.tanggal}</div></div><div class="out-amt">-${fmtRp(p.jumlah)}</div></div>`).join('');
 }
 
-// ── DETAIL AKSIS SISWA ──
 function openAction(id){
   activeId=id; const e=data.find(d=>d.id===id); if(!e) return;
   document.getElementById('act-name').textContent=e.nama;
   document.getElementById('act-sub').textContent=e.status==='paid'?'✓ Lunas':`Sisa utang: ${fmtRp(e.debt)}`;
-  document.getElementById('act-info').innerHTML=`<div class="sib-row"><span>Masuk Minggu Ini:</span><span class="g">${fmtRp(e.paid)}</span></div><div class="sib-row"><span>Sisa Sapi/Utang:</span><span class="r">${fmtRp(e.debt)}</span></div>`;
+  document.getElementById('act-info').innerHTML=`<div class="sib-row"><span>Masuk Minggu Ini:</span><span class="g">${fmtPaidLabel(e.paid)}</span></div><div class="sib-row"><span>Sisa Utang:</span><span class="r">${fmtRp(e.debt)}</span></div>`;
   showBs('bs-action');
 }
 async function actLunas(){
@@ -636,7 +622,7 @@ async function actLunas(){
 function actPartialSheet(){ hideBs('bs-action'); showBs('bs-partial'); }
 async function doPartialPay(){
   const e=data.find(d=>d.id===activeId); const val=parseInt(document.getElementById('part-inp').value)||0; if(!e||val<=0) return;
-  e.paid+=val; if(val>=e.debt){e.debt=0;e.status='paid';e.weeksOverdue=0;}else{e.debt-=val;e.status='partial';e.weeksOverdue=Math.collapse(e.debt/KAS);}
+  e.paid+=val; if(val>=e.debt){e.debt=0;e.status='paid';e.weeksOverdue=0;}else{e.debt-=val;e.status='partial';e.weeksOverdue=Math.ceil(e.debt/KAS);}
   await syncSave(); render(); renderStats(); hideBs('bs-partial'); toast('Pembayaran dicicil','ok');
 }
 function actEditSheet(){ hideBs('bs-action'); showBs('bs-edit'); }
@@ -652,7 +638,6 @@ async function doHapus(){
   await syncSave(); render(); renderStats(); hideBs('bs-hapus'); toast('Data berhasil di-reset','info');
 }
 
-// ── RENDER INTERFACE ──
 function render(){
   const search=document.getElementById('s-inp').value.toLowerCase();
   const container=document.getElementById('sk-list');
@@ -674,6 +659,15 @@ function render(){
   container.innerHTML=html;
 }
 
+function fmtPaidLabel(paidVal){
+  if(paidVal <= 0) return '—';
+  if(paidVal > KAS) {
+    const sisa = paidVal - KAS;
+    return `${KAS.toLocaleString('id-ID')}(+${sisa.toLocaleString('id-ID')})`;
+  }
+  return paidVal.toLocaleString('id-ID');
+}
+
 function cardHTML(d){
   const initials=d.nama.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const isOD=d.weeksOverdue>0&&d.status!=='paid';
@@ -684,7 +678,7 @@ function cardHTML(d){
       <div class="sk-sub"><span>${d.tanggal}</span><span class="dot"></span><span>${esc(d.ket)}</span></div>
     </div>
     <div class="sk-right">
-      <div class="sk-amt ${d.status==='paid'?'g':d.status==='partial'?'o':'r'}">${d.paid>0?fmtRp(d.paid):'—'}</div>
+      <div class="sk-amt ${d.status==='paid'?'g':d.status==='partial'?'o':'r'}">${fmtPaidLabel(d.paid)}</div>
       ${d.debt>0?`<span style="font-size:.65rem;color:var(--red); font-weight:700;">-${fmtRp(d.debt)}</span>`:''}
     </div>
   </div>`;
@@ -703,8 +697,7 @@ function renderStats(){
 
 function renderHistory(){
   const hl=document.getElementById('hist-list');
-  const real=history.filter(h=>!h.isSeed);
-  if(!real.length){ hl.innerHTML=`<div class="empty-state"><p>Belum ada arsip mingguan.</p></div>`; return; }
+  if(!history.length){ hl.innerHTML=`<div class="empty-state"><p>Belum ada arsip mingguan.</p></div>`; return; }
   hl.innerHTML=history.map((h,i)=>{
     if(h.isSeed) return '';
     return `<div class="hc" onclick="openHistDetail(${i})">
@@ -714,7 +707,6 @@ function renderHistory(){
   }).join('');
 }
 
-/* ── PERBAIKAN: MENAMPILKAN KETERANGAN DI POPUP RIWAYAT ── */
 function openHistDetail(idx){
   const h=history[idx]; if(!h) return;
   document.getElementById('hd-title').textContent=`Arsip Minggu ke-${h.weekNum}`;
@@ -725,7 +717,7 @@ function openHistDetail(idx){
     <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;">
       <div style="display:flex;justify-content:space-between;font-size:.85rem;">
         <span style="font-weight:600;color:var(--text);">${esc(s.nama)}</span>
-        <span style="font-weight:800;" class="${s.status==='paid'?'g':s.status==='partial'?'o':'r'}">${s.paid>0?fmtRp(s.paid):'Rp 0'}</span>
+        <span style="font-weight:800;" class="${s.status==='paid'?'g':s.status==='partial'?'o':'r'}">${fmtPaidLabel(s.paid)}</span>
       </div>
       <div style="font-size:.72rem;color:var(--orange);font-style:italic;">
         💬 Catatan: ${esc(s.ket || 'Kas Kamis mingguan')}
@@ -752,23 +744,35 @@ function updateCD(){
   document.getElementById('cd-lbl').textContent='Hari Kas:'; document.getElementById('cd-day').textContent=`${d} hari lagi`; document.getElementById('cd-tv').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
+function showExportSheet(){ showBs('bs-export'); }
+
 function expPDF(){
   const {jsPDF}=window.jspdf; const doc=new jsPDF();
   doc.text('Kas Kelas X TKJ-2',14,18);
-  doc.autoTable({ startY:25, head:[['#','Nama Siswa','Paid','Debt']], body:data.map((d,i)=>[i+1,d.nama,fmtRp(d.paid),fmtRp(d.debt)]) });
+  doc.autoTable({ startY:25, head:[['#','Nama Siswa','Paid','Debt']], body:data.map((d,i)=>[i+1,d.nama,fmtPaidLabel(d.paid),fmtRp(d.debt)]) });
   doc.save('kas-xtkj2.pdf');
 }
 function expXL(){
-  const rows=[['#','Nama','Paid','Debt','Ket','Tanggal']]; data.forEach((d,i)=>rows.push([i+1,d.nama,d.paid,d.debt,d.ket,d.tanggal]));
+  const rows=[['#','Nama','Paid','Debt','Ket','Tanggal']]; data.forEach((d,i)=>rows.push([i+1,d.nama,fmtPaidLabel(d.paid),d.debt,d.ket,d.tanggal]));
   const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Kas'); XLSX.writeFile(wb,'kas-xtkj2.xlsx');
 }
 
+function showMo(id){ showBs(id); }
 function showBs(id){ document.getElementById(id).classList.add('on'); }
 function hideBs(id){ document.getElementById(id).classList.remove('on'); }
 function fmtRp(n){ return 'Rp '+Number(n||0).toLocaleString('id-ID'); }
 function getToday(){ const n=new Date(); return `${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()}`;}
 function dateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function toast(msg, type='info'){
+  const container = document.getElementById('toast-c');
+  const el = document.createElement('div');
+  el.className = `ti ${type}`;
+  el.innerHTML = `<i class="fas ${type==='ok'?'fa-circle-check':type==='err'?'fa-circle-xmark':'fa-circle-info'}"></i> <span>${msg}</span>`;
+  container.appendChild(el);
+  setTimeout(()=>{ el.style.animation='tOut .3s ease both'; setTimeout(()=>el.remove(),300); }, 3000);
+}
 
 init();
 </script>
