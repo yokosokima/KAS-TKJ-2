@@ -438,14 +438,47 @@ let data=[], history=[], pengeluaran=[], flt='all', activeId=null;
 
 async function init(){
   buildDropdown();
-  // Selalu reset ke data preset agar konsisten dengan permintaan
-  seedPreset();
+  await syncLoad();
   checkThuReset();
   render(); renderStats(); renderHistory(); renderPengeluaran();
   setInterval(updateCD, 1000); updateCD();
   document.querySelectorAll('.bs-ov').forEach(el=>{
     el.addEventListener('click', e=>{ if(e.target===el) hideBs(el.id); });
   });
+}
+
+async function syncLoad() {
+  // Coba load dari KVdb online dulu
+  try {
+    const res = await fetch(DB_URL);
+    if (res.ok) {
+      const db = await res.json();
+      if (db && db.data && db.data.length > 0) {
+        data = db.data;
+        history = db.history || [];
+        pengeluaran = db.pengeluaran || [];
+        if (db.wk_num) localStorage.setItem('wk_num', db.wk_num);
+        return;
+      }
+    }
+  } catch (e) {}
+
+  // Fallback: coba dari localStorage
+  const localData = localStorage.getItem('local_data');
+  if (localData) {
+    try {
+      const parsed = JSON.parse(localData);
+      if (parsed && parsed.length > 0) {
+        data = parsed;
+        history = JSON.parse(localStorage.getItem('local_hist')) || [];
+        pengeluaran = JSON.parse(localStorage.getItem('local_out')) || [];
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Kalau benar-benar tidak ada data sama sekali, baru seed
+  seedPreset();
 }
 
 function seedPreset(){
