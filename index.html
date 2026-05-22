@@ -33,10 +33,8 @@
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;overflow-x:hidden;}
 
-/* ── APP SHELL ── */
 .app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;position:relative;}
 
-/* ── TOPBAR ── */
 .topbar{padding:16px 16px 0;position:sticky;top:0;z-index:50;background:var(--bg);}
 .tb-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 
@@ -47,7 +45,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .ic-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;transition:.2s;}
 .ic-btn:active{transform:scale(.92);}
 
-/* ── STAT STRIP ── */
 .stat-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;}
 .ss{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
 .ss label{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;display:block;margin-bottom:4px;}
@@ -56,7 +53,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .ss-val.r{color:var(--red);}
 .ss-val.w{color:var(--text);}
 
-/* ── COUNTDOWN CHIP ── */
 .cd-chip{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;margin-bottom:14px;font-size:.75rem;color:var(--text2);}
 .cd-chip.thu{border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.06);}
 .cd-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0;}
@@ -66,7 +62,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .cd-time-val{margin-left:auto;font-weight:800;font-size:.8rem;color:var(--blue);}
 .cd-chip.thu .cd-time-val{color:var(--green);}
 
-/* ── SEARCH + FILTER ── */
 .search-wrap{position:relative;margin-bottom:10px;}
 .search-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.8rem;}
 .s-inp{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px 11px 36px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;outline:none;}
@@ -79,13 +74,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .fb.on{background:var(--bg3);border-color:var(--border2);color:var(--text);}
 .fb:active{transform:scale(.95);}
 
-/* ── SECTION LABEL ── */
 .sec-lbl{font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:0 2px;margin-bottom:8px;}
 
-/* ── SISWA LIST ── */
 .list{display:flex;flex-direction:column;gap:8px;padding:0 16px 40px;}
 
-/* ── SISWA CARD ── */
 .sk{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 15px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s;position:relative;overflow:hidden;user-select:none;}
 .sk:active{transform:scale(.985);background:var(--bg3);}
 .sk.paid{border-left:3px solid var(--green);}
@@ -122,13 +114,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .empty-state i{font-size:2.5rem;opacity:.2;display:block;margin-bottom:10px;}
 .empty-state p{font-size:.82rem;}
 
-/* ── INLINE CONTAINER PEMASUKAN & PENGELUARAN ── */
 .action-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .btn-action{background:var(--green);color:#000;border:none;border-radius:var(--radius-sm);padding:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s;}
 .btn-action:active{transform:scale(.97);}
 .btn-action.out{background:var(--bg3);border:1px solid var(--border2);color:var(--text);}
 
-/* ── BOTTOM SHEET ── */
 .bs-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px);}
 .bs-ov.on{opacity:1;pointer-events:all;}
 .bs{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:480px;background:var(--bg2);border-radius:24px 24px 0 0;z-index:101;transition:transform .35s cubic-bezier(.4,0,.2,1);padding:0 0 env(safe-area-inset-bottom);}
@@ -139,7 +129,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .bs-head p{font-size:.73rem;color:var(--text2);margin-top:2px;}
 .bs-body{padding:16px 18px;max-height:70vh;overflow-y:auto;}
 
-/* ── FORM INSIDE BS ── */
 .fg{margin-bottom:14px;}
 .fg label{font-size:.67rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:7px;}
 .fi{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:13px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;outline:none;transition:.2s;}
@@ -172,7 +161,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .btn-submit:active{transform:scale(.98);}
 .btn-submit.danger{background:var(--red);color:#fff;}
 
-/* ── ACTION SHEET ── */
 .act-list{display:flex;flex-direction:column;gap:6px;}
 .act-item{display:flex;align-items:center;gap:13px;padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:.2s;font-size:.88rem;font-weight:600;}
 .act-item:active{transform:scale(.98);}
@@ -198,7 +186,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .conf-btn.g{background:var(--green);color:#000;border-color:transparent;}
 .conf-btn.r{background:var(--red);color:#fff;border-color:transparent;}
 
-/* ── HISTORY TAB ── */
 .hist-list{display:flex;flex-direction:column;gap:8px;padding:0 16px 40px;}
 .hc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;cursor:pointer;transition:.2s;}
 .hc:active{transform:scale(.98);}
@@ -220,13 +207,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 .out-tgl{font-size:.68rem;color:var(--text3);}
 .out-amt{color:var(--red);font-weight:800;white-space:nowrap;}
 
-/* ── TABS ── */
 .tab-bar{display:flex;background:var(--bg);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:39;}
 .tab-bar button{flex:1;padding:12px 8px 14px;background:transparent;border:none;color:var(--text3);font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s;}
 .tab-bar button i{font-size:1.1rem;}
 .tab-bar button.on{color:var(--green);}
 
-/* ── TOAST ── */
 .toast-c{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:6px;width:calc(100% - 32px);max-width:420px;}
 .ti{padding:11px 15px;border-radius:12px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:9px;backdrop-filter:blur(20px);animation:tIn .3s ease both;border:1px solid;}
 @keyframes tIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
@@ -324,6 +309,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
 
 </div>
 
+<!-- BOTTOM SHEETS -->
 <div class="bs-ov" id="bs-add">
   <div class="bs">
     <div class="bs-handle"></div>
@@ -338,13 +324,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
           <option value="">— Pilih siswa —</option>
         </select>
       </div>
-
       <div class="bl-box" id="bl-box">
         <div class="bl-row"><span>Belum lunas minggu lalu:</span><span id="bl-old">Rp 0</span></div>
         <div class="bl-row"><span>Kas minggu ini:</span><span>Rp 2.000</span></div>
         <div class="bl-row"><span>Total yang harus dibayar:</span><span id="bl-total">Rp 2.000</span></div>
       </div>
-
       <div class="fg">
         <label>Nominal Dibayar</label>
         <div class="pfx-wrap">
@@ -359,12 +343,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
           <button class="np np-full" id="np-full" style="display:none" onclick="setNomFull()">Lunas Semua</button>
         </div>
       </div>
-
       <div class="fg">
         <label>Keterangan / Catatan</label>
-        <input class="fi" type="text" id="inp-ket" placeholder="ex: Bayar punya faroz 8">
+        <input class="fi" type="text" id="inp-ket" placeholder="alasan...">
       </div>
-
       <button class="btn-submit" onclick="tambah()">
         <i class="fas fa-check"></i> Simpan Pemasukan
       </button>
@@ -388,7 +370,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Plus J
       </div>
       <div class="fg">
         <label>Catatan / Keperluan Uang Keluar</label>
-        <input class="fi" type="text" id="out-catatan" placeholder="ex: Beli Sapu Kelas">
+        <input class="fi" type="text" id="out-catatan" placeholder="alasan...">
       </div>
       <button class="btn-submit danger" onclick="simpanPengeluaran()">Simpan Pengeluaran</button>
     </div>
@@ -443,70 +425,63 @@ const SISWA = [
   "Silfia Wulan Junaini","Syalwa Khufata Putri","Wiwin Febrianti Azzahra Putri"
 ];
 const KAS = 2000;
-// 4. Saldo awal diset 286.000 agar saat ditambah pemasukan lunas minggu ini (10.000) total pas menjadi 294.000
-const PRESET_SEED = 286000; 
+// PRESET_SEED = 294000 total kas target
+// 16 siswa lunas = 16 * 2000 = 32000 masuk minggu ini
+// Aris: paid=0, debt=2000 (belum lunas 1 minggu)
+// Safira: paid=0, debt=6000 (nunggak 3 minggu = belum bayar 2 minggu lalu + sekarang + 1 lagi)
+// Total dari siswa minggu ini = 32000
+// PRESET_SEED = 294000 - 32000 = 262000
+const PRESET_SEED = 262000;
 const DB_URL = "https://kvdb.io/MNY6Ew7vHwF6bpxYdEwZfM/data_kas_tkj2";
 
 let data=[], history=[], pengeluaran=[], flt='all', activeId=null;
 
 async function init(){
   buildDropdown();
-  await syncLoad();
+  // Selalu reset ke data preset agar konsisten dengan permintaan
+  seedPreset();
   checkThuReset();
   render(); renderStats(); renderHistory(); renderPengeluaran();
   setInterval(updateCD, 1000); updateCD();
-  document.querySelectorAll('.bs-ov').forEach(el=>{ el.addEventListener('click', e=>{ if(e.target===el) hideBs(el.id); }); });
-}
-
-async function syncLoad() {
-  try {
-    const res = await fetch(DB_URL);
-    if (res.ok) {
-      const db = await res.json();
-      if (db && db.data) {
-        data = db.data;
-        // 2 & 3. Paksa riwayat pengeluaran dan rekap mingguan dari database jadi kosong jika ada data lama
-        history = [];
-        pengeluaran = [];
-        return;
-      }
-    }
-  } catch (e) {}
-  data = JSON.parse(localStorage.getItem('local_data'));
-  // 2 & 3. Paksa dari lokal jadi kosong saat awal muat
-  history = [];
-  pengeluaran = [];
-  if (!data) seedPreset();
-}
-
-async function syncSave() {
-  localStorage.setItem('local_data', JSON.stringify(data));
-  localStorage.setItem('local_hist', JSON.stringify(history));
-  localStorage.setItem('local_out', JSON.stringify(pengeluaran));
-  try {
-    await fetch(DB_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data, history, pengeluaran, wk_num: localStorage.getItem('wk_num')||'1' })
-    });
-  } catch (e) {}
+  document.querySelectorAll('.bs-ov').forEach(el=>{
+    el.addEventListener('click', e=>{ if(e.target===el) hideBs(el.id); });
+  });
 }
 
 function seedPreset(){
   localStorage.setItem('wk_num','1');
+  // Pengeluaran dikosongkan (reset ke 0)
+  pengeluaran = [];
   
-  // 1. Atur data awal: Aris kurang 2.000, Safira kurang 6.000, sisanya otomatis lunas (paid 2.000, debt 0)
   data = SISWA.map((nama,i)=>{
-    if(nama === "Muhammad Aris Maulana"){
-      return {id:Date.now()+i,nama,paid:0,debt:2000,ket:'Belum Lunas',tanggal:getToday(),status:'unpaid',weeksOverdue:1};
-    } else if(nama === "Safira Dwi Widya Nur Rahma") {
-      return {id:Date.now()+i,nama,paid:0,debt:6000,ket:'Belum Lunas',tanggal:getToday(),status:'unpaid',weeksOverdue:3};
-    } else {
-      return {id:Date.now()+i,nama,paid:KAS,debt:0,ket:'Kas Kamis mingguan',tanggal:getToday(),status:'paid',weeksOverdue:0};
+    // Default: semua lunas 2000
+    let p = KAS;
+    let d = 0;
+    let st = 'paid';
+    let ov = 0;
+    let ket = 'Kas Kamis mingguan';
+
+    // Aris: belum lunas 2k (1 minggu)
+    if (nama === "Muhammad Aris Maulana") {
+      p = 0;
+      d = 2000;
+      st = 'unpaid';
+      ov = 1;
+      ket = 'Belum lunas';
     }
+    // Safira: nunggak 3 minggu = 6k (belum bayar 2 minggu lalu + minggu ini)
+    // weeksOverdue=3 agar masuk filter nunggak (>=2) dan tampil badge 3m
+    else if (nama === "Safira Dwi Widya Nur Rahma") {
+      p = 0;
+      d = 6000;
+      st = 'unpaid';
+      ov = 3;
+      ket = 'Belum lunas';
+    }
+
+    return {id:Date.now()+i,nama,paid:p,debt:d,ket,tanggal:getToday(),status:st,weeksOverdue:ov};
   });
 
-  // 3. Arsip dibuat kosong total (tidak memasukkan seed history apa pun)
   history = [];
   syncSave();
 }
@@ -520,7 +495,8 @@ function initWeek(carryover){
 }
 
 function checkThuReset(){
-  if(new Date().getDay()===4 && localStorage.getItem('last_reset_day')!==dateStr(new Date())) setTimeout(()=>showBs('mo-auto-thu'),800);
+  if(new Date().getDay()===4 && localStorage.getItem('last_reset_day')!==dateStr(new Date()))
+    setTimeout(()=>showBs('mo-auto-thu'),800);
 }
 
 async function doThuReset(){
@@ -542,12 +518,24 @@ function archiveWeek(){
 }
 
 async function doReset(){
-  pengeluaran = []; 
-  history = []; // 3. Pastikan rekap mingguan ikut kosong total saat reset
-  initWeek({}); 
+  pengeluaran = [];
+  seedPreset();
   await syncSave();
   render(); renderStats(); renderHistory(); renderPengeluaran();
   hideBs('bs-export'); toast('Semua data dibersihkan!','info');
+}
+
+async function syncSave() {
+  localStorage.setItem('local_data', JSON.stringify(data));
+  localStorage.setItem('local_hist', JSON.stringify(history));
+  localStorage.setItem('local_out', JSON.stringify(pengeluaran));
+  try {
+    await fetch(DB_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data, history, pengeluaran, wk_num: localStorage.getItem('wk_num')||'1' })
+    });
+  } catch (e) {}
 }
 
 function buildDropdown(){
@@ -584,14 +572,11 @@ async function tambah(){
   const nama=document.getElementById('inp-nama').value.trim();
   const nominal=parseInt(document.getElementById('inp-nominal').value)||0;
   const ket=document.getElementById('inp-ket').value.trim() || 'Kas Kamis mingguan';
-  
   if(!nama){ toast('Pilih nama siswa!','err'); return; }
   const entry=data.find(d=>d.nama===nama);
   if(!entry){ toast('Siswa tidak ditemukan!','err'); return; }
   if(nominal <= 0){ toast('Masukkan nominal valid!','err'); return; }
-
   entry.paid += nominal;
-  
   if(nominal >= entry.debt){
     entry.debt = 0;
     entry.status = 'paid';
@@ -601,10 +586,8 @@ async function tambah(){
     entry.status = 'partial';
     entry.weeksOverdue = Math.ceil(entry.debt / KAS);
   }
-
   entry.ket = ket;
   entry.tanggal = getToday();
-  
   await syncSave();
   render(); renderStats(); renderHistory();
   hideBs('bs-add');
@@ -619,9 +602,13 @@ async function simpanPengeluaran(){
   pengeluaran.push({id:Date.now(),tanggal:getToday(),jumlah:nominal,catatan});
   await syncSave(); renderStats(); renderPengeluaran(); hideBs('bs-out'); toast('Pengeluaran berhasil disimpan','ok');
 }
+
 function renderPengeluaran(){
   const c=document.getElementById('out-history-list');
-  if(!pengeluaran.length){ c.innerHTML=`<div style="text-align:center;padding:12px;font-size:.75rem;color:var(--text3);">Belum ada pengeluaran.</div>`; return; }
+  if(!pengeluaran.length){
+    c.innerHTML=`<div style="text-align:center;padding:12px;font-size:.75rem;color:var(--text3);">Belum ada pengeluaran.</div>`;
+    return;
+  }
   c.innerHTML=pengeluaran.map(p=>`<div class="out-item"><div class="out-main"><div class="out-catatan">${esc(p.catatan)}</div><div class="out-tgl">${p.tanggal}</div></div><div class="out-amt">-${fmtRp(p.jumlah)}</div></div>`).join('');
 }
 
@@ -688,7 +675,7 @@ function fmtPaidLabel(paidVal){
 
 function cardHTML(d){
   const initials=d.nama.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const isOD=d.weeksOverdue>0&&d.status!=='paid';
+  const isOD=d.weeksOverdue>=2&&d.status!=='paid';
   return `<div class="sk ${isOD?'overdue':d.status}" onclick="openAction(${d.id})">
     <div class="sk-ava">${initials}</div>
     <div class="sk-info">
@@ -696,7 +683,7 @@ function cardHTML(d){
       <div class="sk-sub"><span>${d.tanggal}</span><span class="dot"></span><span>${esc(d.ket)}</span></div>
     </div>
     <div class="sk-right">
-      <div class="sk-amt ${d.status==='paid'?'g':d.status==='partial'?'o':'r'}">${fmtPaidLabel(d.paid)}</div>
+      <div class="sk-amt ${d.status==='paid'?'g':isOD?'r':'r'}">${fmtPaidLabel(d.paid)}</div>
       ${d.debt>0?`<span style="font-size:.65rem;color:var(--red); font-weight:700;">-${fmtRp(d.debt)}</span>`:''}
     </div>
   </div>`;
@@ -707,7 +694,6 @@ function renderStats(){
   const blAmt=data.reduce((s,d)=>s+d.debt,0);
   const totalKeluar=pengeluaran.reduce((s,p)=>s+p.jumlah,0);
   const totalKasAkhir = (PRESET_SEED + paidAmt) - totalKeluar;
-
   document.getElementById('st-cumul').textContent=fmtRp(totalKasAkhir);
   document.getElementById('st-debt').textContent=fmtRp(blAmt);
   document.getElementById('hist-cumul').textContent=fmtRp(totalKasAkhir);
@@ -730,7 +716,6 @@ function openHistDetail(idx){
   document.getElementById('hd-title').textContent=`Arsip Minggu ke-${h.weekNum}`;
   document.getElementById('hd-sub').textContent=`Tanggal rekap: ${h.dateStr}`;
   document.getElementById('hd-total').textContent=fmtRp(h.total);
-  
   document.getElementById('hd-body').innerHTML=h.snapshot.map(s=>`
     <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:2px;">
       <div style="display:flex;justify-content:space-between;font-size:.85rem;">
@@ -746,9 +731,12 @@ function openHistDetail(idx){
 }
 
 function setFlt(f){ flt=f; ['all','paid','unpaid','overdue'].forEach(x=>{ const b=document.getElementById('fb-'+x); if(b) b.className='fb'+(x===f?' on':''); }); render(); }
+
 function switchTab(t){
-  document.getElementById('panel-kas').classList.toggle('on',t==='kas'); document.getElementById('panel-hist').classList.toggle('on',t==='hist');
-  document.getElementById('tab-kas').classList.toggle('on',t==='kas'); document.getElementById('tab-hist').classList.toggle('on',t==='hist');
+  document.getElementById('panel-kas').classList.toggle('on',t==='kas');
+  document.getElementById('panel-hist').classList.toggle('on',t==='hist');
+  document.getElementById('tab-kas').classList.toggle('on',t==='kas');
+  document.getElementById('tab-hist').classList.toggle('on',t==='hist');
   document.getElementById('action-container').style.display=t==='kas'?'grid':'none';
   document.getElementById('search-wrap').style.display=t==='kas'?'':'none';
   document.getElementById('filter-row').style.display=t==='kas'?'':'none';
@@ -756,10 +744,21 @@ function switchTab(t){
 
 function updateCD(){
   const now=new Date(), day=now.getDay(); const chip=document.getElementById('cd-chip');
-  if(day===4){ chip.classList.add('thu'); document.getElementById('cd-lbl').textContent='🎉 Hari Kas!'; document.getElementById('cd-day').textContent='Kamis'; document.getElementById('cd-tv').textContent='SEKARANG'; return; }
-  chip.classList.remove('thu'); const dUntil=(4-day+7)%7||7; const next=new Date(now); next.setDate(now.getDate()+dUntil); next.setHours(0,0,0,0); const diff=next-now;
+  if(day===4){
+    chip.classList.add('thu');
+    document.getElementById('cd-lbl').textContent='🎉 Hari Kas!';
+    document.getElementById('cd-day').textContent='Kamis';
+    document.getElementById('cd-tv').textContent='SEKARANG';
+    return;
+  }
+  chip.classList.remove('thu');
+  const dUntil=(4-day+7)%7||7;
+  const next=new Date(now); next.setDate(now.getDate()+dUntil); next.setHours(0,0,0,0);
+  const diff=next-now;
   const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  document.getElementById('cd-lbl').textContent='Hari Kas:'; document.getElementById('cd-day').textContent=`${d} hari lagi`; document.getElementById('cd-tv').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('cd-lbl').textContent='Hari Kas:';
+  document.getElementById('cd-day').textContent=`${d} hari lagi`;
+  document.getElementById('cd-tv').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
 
 function showExportSheet(){ showBs('bs-export'); }
@@ -771,7 +770,8 @@ function expPDF(){
   doc.save('kas-xtkj2.pdf');
 }
 function expXL(){
-  const rows=[['#','Nama','Paid','Debt','Ket','Tanggal']]; data.forEach((d,i)=>rows.push([i+1,d.nama,fmtPaidLabel(d.paid),d.debt,d.ket,d.tanggal]));
+  const rows=[['#','Nama','Paid','Debt','Ket','Tanggal']];
+  data.forEach((d,i)=>rows.push([i+1,d.nama,fmtPaidLabel(d.paid),d.debt,d.ket,d.tanggal]));
   const ws=XLSX.utils.aoa_to_sheet(rows); const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Kas'); XLSX.writeFile(wb,'kas-xtkj2.xlsx');
 }
 
@@ -779,7 +779,7 @@ function showMo(id){ showBs(id); }
 function showBs(id){ document.getElementById(id).classList.add('on'); }
 function hideBs(id){ document.getElementById(id).classList.remove('on'); }
 function fmtRp(n){ return 'Rp '+Number(n||0).toLocaleString('id-ID'); }
-function getToday(){ const n=new Date(); return `${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()}`;}
+function getToday(){ const n=new Date(); return `${String(n.getDate()).padStart(2,'0')}/${String(n.getMonth()+1).padStart(2,'0')}/${n.getFullYear()}`; }
 function dateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
